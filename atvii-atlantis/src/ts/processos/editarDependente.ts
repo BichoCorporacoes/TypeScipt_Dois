@@ -25,7 +25,10 @@ export default class EditarDependente extends Processo {
     console.log("Iniciando a listagem dos clientes dependentes...");
     this.clientes.map((clienteMap) => {
       clienteMap.Documentos.filter((docFilter) => {
-        if (docFilter.Numero === titular) {
+        if (
+          docFilter.Numero === titular &&
+          docFilter.Tipo === TipoDocumento.CPF
+        ) {
           clienteMap.Dependentes.forEach((dependentesForEach) => {
             dependentesForEach.Documentos.forEach(
               (documentoDependenteForEach) => {
