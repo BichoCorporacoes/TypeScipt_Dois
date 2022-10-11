@@ -2,7 +2,6 @@ import Processo from "../abstracoes/processo";
 import Armazem from "../dominio/armazem";
 import { TipoDocumento } from "../enumeracoes/TipoDocumento";
 import MenuEditarCliente from "../menus/menuEditarCliente";
-import MenuEditarDependente from "../menus/menuEditarDependente";
 import Cliente from "../modelos/cliente";
 import CadastrarDocumentosCliente from "./cadastrarDocumentosCliente";
 import EditarDataDeNascimento from "./Editar/editarDataDeNascimento";
@@ -10,6 +9,7 @@ import EditarDocumento from "./Editar/editarDocumento";
 import EditarEndereco from "./Editar/editarEndereco";
 import EditarNome from "./Editar/editarNome";
 import EditarNomeSocial from "./Editar/editarNomeSocial";
+import EditarNumero from "./Editar/editarTelefone";
 
 export default class EditarCliente extends Processo {
   private clientes: Cliente[];
@@ -60,6 +60,10 @@ export default class EditarCliente extends Processo {
                 this.processo.processar();
                 break;
               case 6:
+                this.processo = new EditarNumero(clienteForEach);
+                this.processo.processar();
+                break;
+              case 7:
                 this.processo = new CadastrarDocumentosCliente(clienteForEach);
                 this.processo.processar();
                 break;
