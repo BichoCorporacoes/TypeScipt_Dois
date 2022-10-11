@@ -12,9 +12,7 @@ export default class CadastroTelefone extends Processo {
 
   processar(): void {
     console.log("Coletando os dados de endereço...");
-    let ddd = this.entrada.receberTexto("Digite o ddd");
-    let numero = this.entrada.receberTexto("Digite o numero");
-    let telefone = new Telefone(ddd, numero);
-    this.cliente.Telefones.push(telefone);
+    let numerotell = this.entrada.receberNumeroTelefone("Editar telefone");
+    this.cliente.Telefones.push(numerotell);
   }
 }

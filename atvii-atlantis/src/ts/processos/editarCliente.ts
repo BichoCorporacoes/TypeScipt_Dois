@@ -4,6 +4,7 @@ import { TipoDocumento } from "../enumeracoes/TipoDocumento";
 import MenuEditarCliente from "../menus/menuEditarCliente";
 import Cliente from "../modelos/cliente";
 import CadastrarDocumentosCliente from "./cadastrarDocumentosCliente";
+import CadastroClienteTelefone from "./CadastroClienteTelefone";
 import EditarDataDeNascimento from "./Editar/editarDataDeNascimento";
 import EditarDocumento from "./Editar/editarDocumento";
 import EditarEndereco from "./Editar/editarEndereco";
@@ -65,6 +66,10 @@ export default class EditarCliente extends Processo {
                 break;
               case 7:
                 this.processo = new CadastrarDocumentosCliente(clienteForEach);
+                this.processo.processar();
+                break;
+              case 8:
+                this.processo = new CadastroClienteTelefone(clienteForEach);
                 this.processo.processar();
                 break;
               case 0:
