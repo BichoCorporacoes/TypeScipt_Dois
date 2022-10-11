@@ -4,21 +4,26 @@ import ImpressorDocumentos from "./impressorDocumentos";
 import ImpressorEndereco from "./impressorEndereco";
 
 export default class ImpressaorDepedente implements Impressor {
-    private cliente: Cliente
-    private impressor!: Impressor
-    constructor(cliente: Cliente) {
-        this.cliente = cliente
+  private cliente: Cliente;
+  private impressor!: Impressor;
+  constructor(cliente: Cliente) {
+    this.cliente = cliente;
+  }
+  imprimir(): string {
+    let impressao =
+      `****************************\n` +
+      `| Nome: ${this.cliente.Nome}\n` +
+      `| Nome social: ${this.cliente.NomeSocial}\n` +
+      `| Data de nascimento: ${this.cliente.DataNascimento.toLocaleDateString()}\n` +
+      `| Data de cadastro: ${this.cliente.DataCadastro.toLocaleDateString()}`;
 
-    }
-    imprimir(): string {
-        let impressao = `****************************\n`
-            + `| Nome: ${this.cliente.Nome}\n`
-            + `| Nome social: ${this.cliente.NomeSocial}\n`
-            + `| Data de nascimento: ${this.cliente.DataNascimento.toLocaleDateString()}\n`
-            + `| Data de cadastro: ${this.cliente.DataCadastro.toLocaleDateString()}`
+    this.impressor = new ImpressorEndereco(this.cliente.Endereco);
+    impressao = impressao + `\n${this.impressor.imprimir()}`;
+    
+    this.impressor = new ImpressorDocumentos(this.cliente.Documentos);
+    impressao = impressao + `\n${this.impressor.imprimir()}`;
 
-        impressao = impressao + `\n****************************`
-        return impressao
-    }
-
+    impressao = impressao + `\n****************************`;
+    return impressao;
+  }
 }
