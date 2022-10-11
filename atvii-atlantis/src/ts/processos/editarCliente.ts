@@ -1,60 +1,79 @@
 import Processo from "../abstracoes/processo";
+import Armazem from "../dominio/armazem";
+import { TipoDocumento } from "../enumeracoes/TipoDocumento";
+import MenuEditarCliente from "../menus/menuEditarCliente";
+import MenuEditarDependente from "../menus/menuEditarDependente";
 import Cliente from "../modelos/cliente";
-
-// Fazer Deletação de Documentos e Depedentes
-// Fazer CRUD de dependentes
-// Fazer Inserção(Titular e Depedente), Remoção, Atualização e leitura de telefone
+import CadastrarDocumentosCliente from "./cadastrarDocumentosCliente";
+import EditarDataDeNascimento from "./Editar/editarDataDeNascimento";
+import EditarDocumento from "./Editar/editarDocumento";
+import EditarEndereco from "./Editar/editarEndereco";
+import EditarNome from "./Editar/editarNome";
+import EditarNomeSocial from "./Editar/editarNomeSocial";
 
 export default class EditarCliente extends Processo {
-    private cliente: Cliente
-    public insercao = ''
-
-    constructor(cliente: Cliente, insercao: string) {
-        super()
-        this.cliente = cliente
-        this.insercao = insercao
-    }
-    processar() {
-        if (this.insercao == 'nomes') {
-            let novoNome = this.entrada.receberTexto("Digite o novo nome: ")
-            let nomeSocial = this.entrada.receberTexto("Digite o novo nome social: ")
-            this.cliente.Nome = novoNome
-            this.cliente.NomeSocial = nomeSocial
-            console.log(`Nome e NomeSocial Alterados com sucesso`);
-        } else if (this.insercao == 'datas') {
-            let dataNascimento = this.entrada.receberData("Nova data")
-            this.cliente.DataNascimento = dataNascimento
-            console.log(`Data de nascimento alterada`);
-        } else if (this.insercao == 'endereço') {
-            let rua = this.entrada.receberTexto('Qual a rua?')
-            let bairro = this.entrada.receberTexto('Qual o bairro?')
-            let cidade = this.entrada.receberTexto('Qual a cidade?')
-            let estado = this.entrada.receberTexto('Qual o estado?')
-            let pais = this.entrada.receberTexto('Qual o país?')
-            let codigoPostal = this.entrada.receberTexto('Qual o código postal?')
-            this.cliente.Endereco.Bairro = bairro
-            this.cliente.Endereco.Rua = rua
-            this.cliente.Endereco.Cidade = cidade
-            this.cliente.Endereco.Estado = estado
-            this.cliente.Endereco.Pais = pais
-            this.cliente.Endereco.CodigoPostal = codigoPostal
-            console.log(`Cidade alterada`);
-        } else if (this.insercao == 'documentos') {
-            console.log(`Lista Rapida dos Documentos`);
-            this.cliente.Documentos.forEach(i => {
-                console.log(`------------------------------`);
-                console.log(`|  Documento tipo: ${i.Tipo}`);
-                console.log(`|  Documento numb: ${i.Numero}`);
-                console.log(`------------------------------`);
-                let documento = this.entrada.receberTexto("Digite o numero do documento: ")
-                this.cliente.Documentos.filter(doc => doc.Numero == documento).forEach(novo => {
-                    let novoNumero = this.entrada.receberTexto("Novo numero do documento: ")
-                    let novaData = this.entrada.receberData("Nova data do documento ")
-                    novo.Numero = novoNumero
-                    novo.DataExpedicao = novaData
-                })
-            })
-            console.log("Documento atualizado com sucesso");
+  private clientes: Cliente[];
+  constructor() {
+    super();
+    this.execucao = true;
+    this.menu = new MenuEditarCliente();
+    this.clientes = Armazem.InstanciaUnica.Clientes;
+  }
+  processar(): void {
+    console.clear();
+    let clienteCPF = this.entrada.receberTexto(
+      "Para começar a editar o cliente, forneça o CPF: "
+    );
+    this.clientes.forEach((clienteForEach) => {
+      clienteForEach.Documentos.filter((clienteDocFilter) => {
+        if (
+          clienteDocFilter.Numero === clienteCPF &&
+          clienteDocFilter.Tipo === TipoDocumento.CPF
+        ) {
+          while (this.execucao) {
+            this.menu.mostrar();
+            console.log(
+              `Cliente Nome:'${clienteForEach.Nome}'\nCliente Cpf:'${clienteDocFilter.Numero}'`
+            );
+            this.opcao = this.entrada.receberNumero(
+              `Digite a opção desejada: `
+            );
+            switch (this.opcao) {
+              case 1:
+                this.processo = new EditarNome(clienteForEach);
+                this.processo.processar();
+                break;
+              case 2:
+                this.processo = new EditarNomeSocial(clienteForEach);
+                this.processo.processar();
+                break;
+              case 3:
+                this.processo = new EditarDataDeNascimento(clienteForEach);
+                this.processo.processar();
+                break;
+              case 4:
+                this.processo = new EditarEndereco(clienteForEach);
+                this.processo.processar();
+                break;
+              case 5:
+                this.processo = new EditarDocumento(clienteForEach);
+                this.processo.processar();
+                break;
+              case 6:
+                this.processo = new CadastrarDocumentosCliente(clienteForEach);
+                this.processo.processar();
+                break;
+              case 0:
+                this.execucao = false;
+                console.log("Até logo!");
+                console.clear();
+                break;
+              default:
+                console.log("Opção não entendida .·´¯`(>▂<)´¯`·. ");
+            }
+          }
         }
-    }
+      });
+    });
+  }
 }
